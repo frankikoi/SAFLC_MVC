@@ -1,0 +1,97 @@
+﻿@using SAFLC_MVC.Applications.DTO.StudentDTO
+@model CreateStudentDTO
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <form asp-action="CreateStudent" class="card border-0 shadow-sm p-4">
+                <h4 class="fw-bold mb-4">Student Registration</h4>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <h6 class="text-primary fw-bold border-bottom pb-2">Basic Information</h6>
+                    </div>
+
+               @*      <div class="col-md-3">
+                        <label class="form-label small fw-bold">Student No.</label>
+                        <input asp-for="StudentNo" class="form-control bg-light border-0" placeholder="2026-0001" />
+                    </div> *@
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">First Name</label>
+                        <input asp-for="FirstName" class="form-control bg-light border-0" />
+                        <span asp-validation-for="FirstName" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Middle Name</label>
+                        <input asp-for="MiddleName" class="form-control bg-light border-0" placeholder="(Optional)" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Last Name</label>
+                        <input asp-for="LastName" class="form-control bg-light border-0" />
+                        <span asp-validation-for="LastName" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Birth Date</label>
+                        <input asp-for="BirthDate" type="date" class="form-control bg-light border-0" />
+                        <span asp-validation-for="BirthDate" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Gender</label>
+                        <select asp-for="Gender" class="form-select bg-light border-0">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger" style="font-size: 0.75rem;"></span>
+
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12"><h6 class="text-primary fw-bold border-bottom pb-2">Family Background</h6></div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Father's Full Name</label>
+                        <input asp-for="FatherName" class="form-control bg-light border-0" />
+                        <span asp-validation-for="FatherName" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Mother's Full Name</label>
+                        <input asp-for="MotherName" class="form-control bg-light border-0" />
+                        <span asp-validation-for="MotherName" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label small fw-bold">Guardian (In case of emergency)</label>
+                        <input asp-for="Guardian" class="form-control bg-light border-0" />
+                        <span asp-validation-for="Guardian" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12"><h6 class="text-primary fw-bold border-bottom pb-2">Contact & Address</h6></div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Contact Number</label>
+                        <input asp-for="ContactNumber" type="tel" class="form-control bg-light border-0" placeholder="09123456789" />
+                        <span asp-validation-for="ContactNumber" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label small fw-bold">Address</label>
+                        <input asp-for="Address" class="form-control bg-light border-0" />
+                        <span asp-validation-for="Address" class="text-danger" style="font-size: 0.75rem;"></span>
+                    </div>
+                    <div class="col-md-4 mt-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" asp-for="Status">
+                            <label class="form-check-label fw-bold">Account Active</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 text-end">
+                    <a asp-action="Index" class="btn btn-link text-muted me-2">Back to List</a>
+                    <button type="submit" class="btn btn-primary px-5 shadow-sm">Save Student Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

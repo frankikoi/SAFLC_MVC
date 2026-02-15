@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    var userRole = ViewBag.Role as string;
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Dashboard</h2>
+            <p class="text-muted mb-0">Welcome to SAFLC Management System</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-dark px-3 py-2">Role: @userRole</span>
+        </div>
+    </div>
+
+    @if (userRole == "Admin")
+    {
+        <partial name="_AdminDashboard" />
+    }
+    else
+    {
+        <partial name="_TeacherDashboard" />
+    }
+</div>

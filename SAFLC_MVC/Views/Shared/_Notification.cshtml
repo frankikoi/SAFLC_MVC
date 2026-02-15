@@ -1,0 +1,27 @@
+﻿@if (TempData["success"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            toastr.options = {
+                "positionClass": "toast-top-right",
+                "progressBar": true,
+                "closeButton": true
+            };
+            toastr.success('@TempData["success"]');
+        });
+    </script>
+}
+
+@if (TempData["error"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            toastr.options = {
+                "positionClass": "toast-top-right",
+                "progressBar": true,
+                "closeButton": true
+            };
+            toastr.error('@TempData["error"]');
+        });
+    </script>
+}

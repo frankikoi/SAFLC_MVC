@@ -1,0 +1,49 @@
+﻿<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">My Schedule</h5>
+                <span class="badge bg-primary-subtle text-primary px-3 py-2">Today, @DateTime.Now.ToString("MMM dd")</span>
+            </div>
+
+            <div class="d-flex mb-4">
+                <div class="text-muted small fw-bold pt-2" style="min-width: 80px;">08:00 AM</div>
+                <div class="flex-grow-1 ms-3 p-3 bg-light rounded-3 border-start border-success border-4">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="mb-1 fw-bold">Mathematics 101</h6>
+                        <span class="text-success small"><i class="bi bi-check-circle"></i> Done</span>
+                    </div>
+                    <p class="small text-muted mb-0">Grade 10 - Section A • Room 302</p>
+                </div>
+            </div>
+
+            <div class="d-flex mb-4">
+                <div class="text-primary small fw-bold pt-2" style="min-width: 80px;">10:30 AM</div>
+                <div class="flex-grow-1 ms-3 p-3 bg-white shadow-sm rounded-3 border-start border-warning border-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1 fw-bold">Physical Science</h6>
+                            <p class="small text-muted mb-0">Grade 11 - Section B • Room 105</p>
+                        </div>
+                        <button class="btn btn-warning btn-sm fw-bold px-3">Mark Attendance</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm p-4 mb-4 text-center bg-primary text-white">
+            <h6 class="opacity-75 small text-uppercase">Total Students Today</h6>
+            <div class="display-6 fw-bold">142</div>
+            <p class="small mb-0 opacity-75">across 4 subjects</p>
+        </div>
+
+        <div class="card border-0 shadow-sm p-4">
+            <h6 class="fw-bold mb-3">Quick Actions</h6>
+            <button class="btn btn-outline-secondary w-100 mb-2 text-start small">View Class List</button>
+            <button class="btn btn-outline-secondary w-100 mb-2 text-start small">Upload Grade Sheet</button>
+            <button class="btn btn-outline-secondary w-100 text-start small">Send Notice to Parents</button>
+        </div>
+    </div>
+</div>
