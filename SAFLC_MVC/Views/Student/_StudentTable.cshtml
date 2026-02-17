@@ -1,0 +1,55 @@
+﻿@using SAFLC_MVC.Applications.DTO.StudentDTO
+@model IEnumerable<GetStudentDTO>
+
+<div class="card border-0 shadow-sm p-4">
+    <table class="table align-middle">
+        <thead class="text-muted small">
+            <tr>
+                <th>STUDENT ID</th>
+                <th>NAME</th>
+                <th>CONTACT</th>
+                <th>STATUS</th>
+                <th class="text-end">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody id="studentTableBody">
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="bi bi-people mb-2" style="font-size: 2rem;"></i>
+                        <p>No students enrolled yet.</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr id="row-@item.Id">
+                        <td class="fw-bold">@item.StudentNo</td>
+                        <td>
+                            <div class="fw-bold">@item.LastName, @item.FirstName</div>
+                            <small class="text-muted">@item.Gender</small>
+                        </td>
+                        <td class="small">@item.ContactNumber</td>
+                        <td>
+                            <span class="badge @(item.Status == true ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary")">
+                                @(item.Status == true ? "Active" : "Inactive")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="EditStudentById" asp-route-id="@item.Id" class="btn btn-sm btn-light border px-2">
+                                <i class="bi bi-pencil"></i> <span class="small">Edit</span>
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-danger px-2"
+                                    onclick="openDeleteModal(@item.Id, '@item.FirstName @item.LastName')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

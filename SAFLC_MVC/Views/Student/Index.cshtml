@@ -10,91 +10,38 @@
 
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-2">
-            <form asp-action="Index" method="get" class="d-flex align-items-center">
+            <form asp-action="Index" method="get"
+                  onsubmit="event.preventDefault(); refreshStudentTable();"
+                  class="d-flex align-items-center">
+
                 <i class="bi bi-search text-muted ms-3"></i>
-                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]"
+
+                <input type="text" id="searchString" name="searchString"
+                       value="@ViewData["CurrentFilter"]"
                        class="form-control border-0 bg-transparent shadow-none"
                        placeholder="Search by name or student number..." />
-                @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"] as string))
-                {
-                    <a asp-action="Index" class="btn btn-link text-muted text-decoration-none small">Clear</a>
-                }
-                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill ms-2">Search</button>
+
+                <a id="clearSearchBtn"
+                   asp-action="Index"
+                   class="btn btn-link text-muted text-decoration-none small d-none">
+                    Clear
+                </a>
+
+                <button type="button" onclick="refreshStudentTable()"
+                        class="btn btn-dark btn-sm px-4 rounded-pill ms-2">
+                    Search
+                </button>
             </form>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm p-4">
-        <table class="table align-middle">
-            <thead class="text-muted small">
-                <tr>
-                    <th>STUDENT ID</th>
-                    <th>NAME</th>
-                    <th>CONTACT</th>
-                    <th>STATUS</th>
-                    <th class="text-end">ACTIONS</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!Model.Any())
-                {
-                    <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
-                            <i class="bi bi-people mb-2" style="font-size: 2rem;"></i>
-                            <p>No students enrolled yet.</p>
-                        </td>
-                    </tr>
-                }
-                else
-                {
-                    @foreach (var item in Model)
-                    {
-                        <tr id="row-@item.Id">
-                            <td class="fw-bold">@item.StudentNo</td>
-                            <td>
-                                <div class="fw-bold">@item.LastName, @item.FirstName</div>
-                                <small class="text-muted">@item.Gender</small>
-                            </td>
-                            <td class="small">@item.ContactNumber</td>
-                            <td>
-                                <span class="badge @(item.Status == true ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary")">
-                                    @(item.Status == true ? "Active" : "Inactive")
-                                </span>
-                            </td>
-                            <td class="text-end">
-                                <a asp-action="GetStudentById" asp-route-id="@item.Id" class="btn btn-sm btn-light border px-2">
-                                    <i class="bi bi-pencil"></i> <span class="small">Edit</span>
-                                </a>
-
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-danger px-2"
-                                        onclick="openDeleteModal(@item.Id, '@item.FirstName @item.LastName')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
+    <div id="tableContainer">
+        @await Html.PartialAsync("_StudentTable", Model)
     </div>
 </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-body text-center p-5">
-                <i class="bi bi-exclamation-circle text-danger display-1"></i>
-                <h3 class="mt-3">Are you sure?</h3>
-                <p class="text-muted">You are about to delete <span id="studentNameDisplay" class="fw-bold"></span>.</p>
-                <div class="d-flex justify-content-center mt-4">
-                    <button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Delete Permanently</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@await Html.PartialAsync("_DeleteModalPartial")
+
 @section Scripts {
     <script src="~/js/student.js" asp-append-version="true"></script>
 }

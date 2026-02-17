@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using SAFLC_MVC.Application.Model;
 using SAFLC_MVC.Applications.DTO.StudentDTO;
+using SAFLC_MVC.Applications.Helpers;
 using SAFLC_MVC.Interfaces;
 using System.Threading.Tasks;
 
@@ -26,28 +27,33 @@ namespace SAFLC_MVC.Controllers
         public async Task<IActionResult> Index(string searchString)
         {
             ViewData["CurrentFilter"] = searchString;
+            var students = await GetFilteredStudents(searchString);
+            return View(students);
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> GetStudentTable(string searchString = "")
+        {
+            var students = await GetFilteredStudents(searchString);
+            return PartialView("_StudentTable", students);
+        }
+
+        // Private helper to keep logic identical in both places
+        private async Task<List<GetStudentDTO>> GetFilteredStudents(string searchString)
+        {
             var result = await _studentService.GetAll();
-
-            if (!result.Success || result.Item == null)
-            {
-                TempData["error"] = result.Message ?? "Could not retrieve students.";
-                return View(new List<GetStudentDTO>()); 
-            }
-
-            var students = result.Item;
+            var students = result.Item ?? new List<GetStudentDTO>();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                searchString = searchString.Trim().ToLower();
+                searchString = searchString.Trim();
                 students = students.Where(s =>
-                    (s.FirstName?.ToLower().Contains(searchString) ?? false) ||
-                    (s.LastName?.ToLower().Contains(searchString) ?? false) ||
-                    (s.StudentNo?.ToLower().Contains(searchString) ?? false)
+                    (s.FirstName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (s.LastName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (s.StudentNo?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false)
                 ).ToList();
             }
-
-            return View(students);
+            return students;
         }
 
         public IActionResult Create() => View("CreateStudent");
@@ -77,18 +83,35 @@ namespace SAFLC_MVC.Controllers
             return NotFound();
 
         }
+        public async Task<IActionResult> EditStudentById(int id)
+        {
+            var studentDTO = new UpdateStudentDTO();
+
+            var result = await _studentService.GetById(id);
+             
+            if (result.Success)
+            {
+                var student = result.Item;
+
+                //student = _map result.Item;
+                return View("EditStudent", student);
+
+            }
+            return NotFound();
+
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken] 
-        public async Task<IActionResult> CreateStudent(CreateStudentDTO student)
+        public async Task<IActionResult> CreateStudent(CreateStudentDTO studentDTO)
         {
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Please correct the errors in the form.";
-                return View(student);
+                return View(studentDTO);
             }
 
-            var result = await _studentService.CreateStudent(student);
+            var result = await _studentService.CreateStudent(studentDTO);
 
             if (result.Success)
             {
@@ -97,32 +120,41 @@ namespace SAFLC_MVC.Controllers
             }
 
             TempData["error"] = result.Message ?? "Failed to enroll student.";
-            return View(student); 
+            return View(studentDTO); 
         }
 
         [HttpPost]
-        public IActionResult Edit(Student student)
+        public async Task<IActionResult> EditStudent(UpdateStudentDTO studentDTO)
         {
             //Handle Error
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Please correct the errors in the form.";
-                return View(student);
+                return View(studentDTO);
             }
 
-            var index = Students.FindIndex(s => s.Id == student.Id);
-            if (index != -1)
+            var result = await _studentService.UpdateStudent(studentDTO);
+            if (result.Success)
             {
-                Students[index] = student;
-                TempData["success"] = "Student details updated.";
+                TempData["success"] = result.Message ?? "Student details updated.";
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction("Index");
+
+            TempData["error"] = result.Message ?? "Failed to update student.";
+            return View(studentDTO);
         }
 
-        public IActionResult Delete(int id)
+        [HttpPost] 
+        public async Task<IActionResult> Delete(int id)
         {
-            Students.RemoveAll(s => s.Id == id);
-            return RedirectToAction(nameof(Index));
+            if (id <= 0)
+                return Json(ResponseHelper.BuildFailure<bool>("Invalid ID provided."));
+
+            // Call the Service logic
+            var result = await _studentService.DeleteAsync(id);
+
+            // Return the result as JSON for the AJAX call to handle
+            return Json(result);
         }
     }
 }

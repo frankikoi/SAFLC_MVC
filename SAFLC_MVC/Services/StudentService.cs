@@ -57,7 +57,7 @@ namespace SAFLC_MVC.Services
                 //await _auditLogger.LogUpdateAsync("Student", entity.Id, "Updated profile"); // Table 2
 
                 await transaction.CommitAsync();
-                return ResponseHelper.BuildSuccess(_mapper.Map<GetStudentDTO>(entity), "Student updated");
+                return ResponseHelper.BuildSuccess(_mapper.Map<GetStudentDTO>(entity), $"Student {entity.StudentNo} successfully updated");
             }
             catch (Exception ex)
             {

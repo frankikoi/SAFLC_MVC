@@ -1,21 +1,48 @@
-﻿// Use a let variable to track the ID
+﻿// student.js
+
 let studentIdToDelete = 0;
 
-// Attach to 'window' to ensure the onclick="@item.Id" can find it
 window.openDeleteModal = function (id, fullName) {
     studentIdToDelete = id;
     $('#studentNameDisplay').text(fullName);
 
     const modalElement = document.getElementById('deleteModal');
+    if (modalElement) {
+        // Use Bootstrap to show
+        let modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modalInstance.show();
+    }
+};
 
-    if (!modalElement) {
-        console.error("Error: Could not find element with ID 'deleteModal'");
-        return;
+window.closeCustomModal = function () {
+    const modalElement = document.getElementById('deleteModal');
+    if (modalElement) {
+        // Use Bootstrap to hide (this also removes the dark backdrop)
+        let modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
     }
 
-    let modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
-    modalInstance.show();
+    // Clean up
+    studentIdToDelete = 0;
 };
+
+function refreshStudentTable() {
+    const searchInput = $('#searchString');
+    const searchVal = searchInput.val() || "";
+    const clearBtn = $('#clearSearchBtn');
+
+    // Show/Hide the Clear button based on input content
+    if (searchVal.trim() !== "") {
+        clearBtn.removeClass('d-none');
+    } else {
+        clearBtn.addClass('d-none');
+    }
+
+    // Perform the AJAX load
+    $('#tableContainer').load(`/Student/GetStudentTable?searchString=${encodeURIComponent(searchVal)}`);
+}
 
 $(document).ready(function () {
     $('#confirmDeleteBtn').on('click', function () {
@@ -27,18 +54,22 @@ $(document).ready(function () {
         $.ajax({
             url: '/Student/Delete',
             type: 'POST',
-            data: { id: studentIdToDelete },
+            data: { id: studentIdToDelete },// Inside your Delete AJAX Success:
             success: function (result) {
-                // Hide modal
-                const modalInstance = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-                if (modalInstance) modalInstance.hide();
+                if (result.success) {
 
-                // Remove row
-                $(`#row-${studentIdToDelete}`).fadeOut(400, function () {
-                    $(this).remove();
-                });
+                    // 1. Animate the removal
+                    $(`#row-${studentIdToDelete}`).fadeOut(400, function () {
+                        $(this).remove();
 
-                toastr.success("Student records removed successfully.");
+                        // 2. Refresh the whole table container to handle empty states/counts
+                        refreshStudentTable();
+                    });
+                    closeCustomModal();
+                    toastr.success(result.message);
+                } else {
+                    toastr.error(result.message);
+                }
             },
             error: function () {
                 toastr.error("Oops! Something went wrong.");
