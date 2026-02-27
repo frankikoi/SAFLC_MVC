@@ -10,12 +10,6 @@ namespace SAFLC_MVC.Controllers
 {
     public class StudentController : Controller
     {
-        // 1. Change List<string> to List<Student>
-        private static List<Student> Students = new List<Student>
-        {
-            new Student { Id = 1, StudentNo = "2026-0001", FirstName = "Juan", LastName = "Dela Cruz", Gender = "Male", Status = true, ContactNumber = "09123456789" },
-            new Student { Id = 2, StudentNo = "2026-0002", FirstName = "Maria", LastName = "Clara", Gender = "Female", Status = true, ContactNumber = "09987654321" }
-        };
 
         private readonly IStudentService _studentService;
 
@@ -58,16 +52,7 @@ namespace SAFLC_MVC.Controllers
 
         public IActionResult Create() => View("CreateStudent");
 
-        // GET: Student/Edit/1
-        public IActionResult Edit(int id)
-        {
-
-            //var student = _studentService.GetById(id);
-            var student = Students.FirstOrDefault(s => s.Id == id);
-            if (student == null) return NotFound();
-
-            return View(student);
-        }
+     
         public async Task<IActionResult> GetStudentById(int id)
         {
             var student = new GetStudentDTO();

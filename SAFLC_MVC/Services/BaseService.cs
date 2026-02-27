@@ -1,19 +1,26 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SAFLC_MVC.Applications.Helpers;
+using SAFLC_MVC.Data;
 using SAFLC_MVC.Interfaces;
 
 namespace SAFLC_MVC.Services
 {
     public abstract class BaseService<TEntity, TGetDto> where TEntity : class
     {
+        protected readonly SaflcDbContext _context;
+        protected readonly DbSet<TEntity> _dbSet;
+
         protected readonly IBaseRepository<TEntity> _repository;
 
         protected readonly IMapper _mapper;
 
-        protected BaseService(IBaseRepository<TEntity> repository, IMapper mapper)
+        protected BaseService(SaflcDbContext context, IBaseRepository<TEntity> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
+            _context = context;
+            _dbSet = _context.Set<TEntity>();
         }
 
         public virtual async Task<ResultResponse<List<TGetDto>>> GetAll()

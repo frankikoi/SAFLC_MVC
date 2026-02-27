@@ -9,7 +9,7 @@ namespace SAFLC_MVC.Data
         public SaflcDbContext(DbContextOptions<SaflcDbContext> options) : base(options)
         {
         }
-        public DbSet<Activity> tbl_Activities { get; set; }
+        public DbSet<Activities> tbl_Activities { get; set; }
 
         public DbSet<ActivityScore> tbl_ActivityScores { get; set; }
 

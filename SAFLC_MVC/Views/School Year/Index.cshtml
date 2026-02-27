@@ -1,0 +1,41 @@
+﻿@using SAFLC_MVC.Application.Model
+@using SAFLC_MVC.Applications.Helpers
+@model PaginatedList<SchoolYear>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">School Year Registry</h2>
+        <a asp-action="Create" class="btn btn-primary px-4 shadow-sm">+ Add School Year</a>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-2">
+            <form asp-action="Index" method="get"
+                  onsubmit="event.preventDefault(); refreshStudentTable();"
+                  class="d-flex align-items-center">
+
+                <i class="bi bi-search text-muted ms-3"></i>
+
+                <input type="text" id="searchString" name="searchString"
+                       value="@ViewData["CurrentFilter"]"
+                       class="form-control border-0 bg-transparent shadow-none"
+                       placeholder="Search by name or student number..." />
+
+                <a id="clearSearchBtn"
+                   asp-action="Index"
+                   class="btn btn-link text-muted text-decoration-none small d-none">
+                    Clear
+                </a>
+
+                <button type="button" onclick="refreshStudentTable()"
+                        class="btn btn-dark btn-sm px-4 rounded-pill ms-2">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="tableContainer">
+        @await Html.PartialAsync("_SchoolYearTable", Model)
+    </div>
+</div>
