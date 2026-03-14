@@ -1,6 +1,6 @@
-﻿namespace SAFLC_MVC.Application.Model
+﻿namespace SAFLC_MVC.Applications.DTO.ClassesDTO
 {
-    public class Classes
+    public class UpdateClassesDTO
     {
         public int Id { get; set; }
 

@@ -1,6 +1,6 @@
-﻿namespace SAFLC_MVC.Application.Model
+﻿namespace SAFLC_MVC.Applications.DTO.ActivityDTO
 {
-    public class Activity
+    public class UpdateActivityDTO
     {
         public int Id { get; set; }
 

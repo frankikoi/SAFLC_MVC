@@ -1,0 +1,11 @@
+services:
+  saflc_mvc:
+    saflc_mvc_db:
+        
+    container_name: :saflc_mvc
+    image: ${DOCKER_REGISTRY-}saflcmvc
+    build:
+      context: .
+      dockerfile: SAFLC_MVC/Dockerfile
+    ports:
+        - "8080:8080"

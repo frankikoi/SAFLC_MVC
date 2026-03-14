@@ -1,0 +1,34 @@
+﻿@using SAFLC_MVC.Application.Model
+@using SAFLC_MVC.Applications.Helpers
+@model PaginatedList<SchoolYear>
+
+<div class="card border-0 shadow-sm p-4">
+    <table class="table align-middle">
+        <thead class="text-muted small">
+            <tr>
+                <th>SCHOOL YEAR</th>
+                <th>START DATE</th>
+                <th>END DATE</th>
+                <th class="text-end">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Items.Any())
+            {
+                <tr><td colspan="4" class="text-center py-5 text-muted">No school years found.</td></tr>
+            }
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td><span class="fw-bold text-dark">@item.Year</span></td>
+                    <td>@item.StartDate.ToString("MMMM dd, yyyy")</td>
+                    <td>@item.EndDate.ToString("MMMM dd, yyyy")</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-light border" onclick="editYear(@item.Id)"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteYear(@item.Id)"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
