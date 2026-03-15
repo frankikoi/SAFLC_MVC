@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SAFLC_MVC.Application.Model;
 using SAFLC_MVC.Applications.DTO.StudentDTO;
+using SAFLC_MVC.Applications.DTO.SubjectDTO;
 
 namespace SAFLC_MVC.Mapping
 {
@@ -10,23 +11,28 @@ namespace SAFLC_MVC.Mapping
         {
             #region Student Mapping
 
-            CreateMap<Student, CreateStudentDTO>()
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
-                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
-                .ForMember(dest => dest.LastModifiedBy, opt => opt.MapFrom(src => src.CreatedBy))
-                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => DateTime.Now))
-                .ReverseMap();
+            CreateMap<CreateStudentDTO, Student>().ReverseMap();
 
-            CreateMap<Student, UpdateStudentDTO>()
-                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.LastModifiedBy, opt => opt.MapFrom(src => src.LastModifiedBy))
-                .ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => DateTime.Now))
-                .ReverseMap();
+            CreateMap<UpdateStudentDTO, Student>().ReverseMap();
 
             CreateMap<Student, GetStudentDTO>()
                 .ReverseMap();
 
+            CreateMap<GetStudentDTO, UpdateStudentDTO>()
+                .ReverseMap();
+
+            #endregion
+
+            #region Subject Mapping
+            CreateMap<CreateSubjectDTO, Subject>().ReverseMap();
+
+            CreateMap<UpdateSubjectDTO, Subject>().ReverseMap();
+
+            CreateMap<Subject, GetSubjectDTO>()
+                .ReverseMap();
+
+            CreateMap<GetSubjectDTO, UpdateSubjectDTO>()
+                .ReverseMap();
             #endregion
         }
     }

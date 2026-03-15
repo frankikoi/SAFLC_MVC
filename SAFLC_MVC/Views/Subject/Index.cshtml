@@ -1,0 +1,47 @@
+﻿@using SAFLC_MVC.Applications.DTO.SubjectDTO
+@using SAFLC_MVC.Applications.Model
+@model PaginatedList<GetSubjectDTO>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">Subject Registry</h2>
+            <p class="text-muted small">Manage curriculum courses and credit units.</p>
+        </div>
+        <button type="button"
+                class="btn btn-dark px-4 shadow-sm rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#addSubjectModal">
+            + Add Subject
+        </button>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-2">
+            <form onsubmit="event.preventDefault(); refreshSubjectTable();" class="d-flex align-items-center">
+                <i class="bi bi-search text-muted ms-3"></i>
+                <input type="text" id="searchString" value="@ViewData["CurrentFilter"]"
+                       class="form-control border-0 bg-transparent shadow-none"
+                       placeholder="Search by code or title..." />
+
+                <a id="clearSearchBtn" href="javascript:void(0)"
+                   class="btn btn-link text-muted text-decoration-none small d-none"
+                   onclick="clearSearch()">Clear</a>
+
+                <button type="button" onclick="refreshSubjectTable()" class="btn btn-dark btn-sm px-4 rounded-pill ms-2">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="tableContainer">
+        @await Html.PartialAsync("_SubjectTable", Model)
+    </div>
+</div>
+
+@await Html.PartialAsync("_AddSubjectModalPartial")
+
+@section Scripts {
+    <script src="~/js/subject.js" asp-append-version="true"></script>
+}

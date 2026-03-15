@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using SAFLC_MVC.Application.Model;
 using SAFLC_MVC.Applications.DTO.StudentDTO;
 using SAFLC_MVC.Applications.Helpers;
+using SAFLC_MVC.Applications.Model;
 using SAFLC_MVC.Interfaces;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace SAFLC_MVC.Controllers
@@ -12,47 +15,30 @@ namespace SAFLC_MVC.Controllers
     {
 
         private readonly IStudentService _studentService;
-
-        public StudentController(IStudentService studentService)
+        private readonly IMapper _mapper;
+        public StudentController(IStudentService studentService, IMapper mapper)
         {
             _studentService = studentService;
+            _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageNumber = 1)
         {
             ViewData["CurrentFilter"] = searchString;
-            var students = await GetFilteredStudents(searchString);
+            var students = await _studentService.GetFilteredStudents(searchString, pageSize, pageNumber);
             return View(students);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStudentTable(string searchString = "")
+        public async Task<IActionResult> GetStudentTable(string searchString = "", int pageSize = 10, int pageNumber = 1)
         {
-            var students = await GetFilteredStudents(searchString);
+            var students = await _studentService.GetFilteredStudents(searchString, pageSize, pageNumber);
             return PartialView("_StudentTable", students);
         }
 
-        // Private helper to keep logic identical in both places
-        private async Task<List<GetStudentDTO>> GetFilteredStudents(string searchString)
-        {
-            var result = await _studentService.GetAll();
-            var students = result.Item ?? new List<GetStudentDTO>();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                searchString = searchString.Trim();
-                students = students.Where(s =>
-                    (s.FirstName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (s.LastName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (s.StudentNo?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false)
-                ).ToList();
-            }
-            return students;
-        }
 
         public IActionResult Create() => View("CreateStudent");
 
-     
         public async Task<IActionResult> GetStudentById(int id)
         {
             var student = new GetStudentDTO();
@@ -77,9 +63,9 @@ namespace SAFLC_MVC.Controllers
             if (result.Success)
             {
                 var student = result.Item;
-
+                studentDTO = _mapper.Map<UpdateStudentDTO>(student);
                 //student = _map result.Item;
-                return View("EditStudent", student);
+                return View("EditStudent", studentDTO);
 
             }
             return NotFound();
@@ -141,5 +127,6 @@ namespace SAFLC_MVC.Controllers
             // Return the result as JSON for the AJAX call to handle
             return Json(result);
         }
+
     }
 }

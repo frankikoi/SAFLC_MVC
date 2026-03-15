@@ -25,9 +25,9 @@ namespace SAFLC_MVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSchoolYears(string searchString = "")
+        public async Task<IActionResult> GetSchoolYears(int pageSize, string searchString = "")
         {
-            var schoolYears = await _schoolYearService.GetFilteredSchoolYears(searchString);
+            var schoolYears = await _schoolYearService.GetFilteredSchoolYears(searchString, pageSize);
             return PartialView("_SchoolYearTable", schoolYears);
         }
 

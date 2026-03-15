@@ -1,5 +1,7 @@
-﻿@using SAFLC_MVC.Applications.DTO.StudentDTO
-@model IEnumerable<GetStudentDTO>
+﻿
+@using SAFLC_MVC.Applications.DTO.StudentDTO
+@using SAFLC_MVC.Applications.Model
+@model PaginatedList<GetStudentDTO>
 
 <div class="card border-0 shadow-sm p-4">
     <table class="table align-middle">
@@ -13,7 +15,7 @@
             </tr>
         </thead>
         <tbody id="studentTableBody">
-            @if (!Model.Any())
+            @if (!Model.Items.Any())
             {
                 <tr>
                     <td colspan="5" class="text-center py-5 text-muted">
@@ -24,7 +26,7 @@
             }
             else
             {
-                @foreach (var item in Model)
+                @foreach (var item in Model.Items)
                 {
                     <tr id="row-@item.Id">
                         <td class="fw-bold">@item.StudentNo</td>
@@ -52,4 +54,5 @@
             }
         </tbody>
     </table>
+    @await Html.PartialAsync("_Pagination", Model, new ViewDataDictionary(ViewData) { { "RefreshFunction", "refreshStudentTable" } })
 </div>

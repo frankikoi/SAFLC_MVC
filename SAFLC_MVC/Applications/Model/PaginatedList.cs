@@ -1,4 +1,4 @@
-﻿namespace SAFLC_MVC.Applications.Helpers
+﻿namespace SAFLC_MVC.Applications.Model
 {
     public class PaginatedList<T>
     {

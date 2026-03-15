@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SAFLC_MVC.Applications.DTO.StudentDTO
 {
-    public class UpdateStudentDTO :BaseEntity
+    public class UpdateStudentDTO 
     {
         public int Id { get; set; }
 
@@ -38,5 +38,8 @@ namespace SAFLC_MVC.Applications.DTO.StudentDTO
 
         [Required(ErrorMessage = "Address is required")]
         public string? Address { get; set; }
+
+        public bool Status { get; set; }
+
     }
 }

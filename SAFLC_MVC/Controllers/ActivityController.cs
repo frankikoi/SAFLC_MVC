@@ -20,6 +20,7 @@ namespace SAFLC_MVC.Controllers
         {
             return View();
         }
+
         [HttpGet]
         public async Task<IActionResult> GetActivities(string searchString = "")
         {
