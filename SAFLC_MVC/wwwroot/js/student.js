@@ -28,20 +28,20 @@ window.closeCustomModal = function () {
     studentIdToDelete = 0;
 };
 
-function refreshStudentTable() {
-    const searchInput = $('#searchString');
-    const searchVal = searchInput.val() || "";
+function refreshStudentTable(page = 1, pageSize = 10) {
+    const searchVal = $('#searchString').val() || "";
     const clearBtn = $('#clearSearchBtn');
 
-    // Show/Hide the Clear button based on input content
     if (searchVal.trim() !== "") {
         clearBtn.removeClass('d-none');
     } else {
         clearBtn.addClass('d-none');
     }
 
-    // Perform the AJAX load
-    $('#tableContainer').load(`/Student/GetStudentTable?searchString=${encodeURIComponent(searchVal)}`);
+    // Pass both searchString and pageNumber to the controller
+    const url = `/Student/GetStudentTable?searchString=${encodeURIComponent(searchVal)}&pageSize=${pageSize}&pageNumber=${page}`;
+
+    $('#tableContainer').load(url);
 }
 
 $(document).ready(function () {

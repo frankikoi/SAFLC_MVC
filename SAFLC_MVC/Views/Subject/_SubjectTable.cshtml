@@ -1,0 +1,55 @@
+﻿@using SAFLC_MVC.Applications.DTO.SubjectDTO
+@using SAFLC_MVC.Applications.Model
+@model PaginatedList<GetSubjectDTO>
+
+<div class="card border-0 shadow-sm p-4">
+    <table class="table align-middle">
+        <thead class="text-muted small">
+            <tr>
+                <th style="width: 15%">ID</th>
+                <th>SUBJECT NAME</th>
+                <th class="text-end">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody id="subjectTableBody">
+            @if (!Model.Items.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center py-5 text-muted">
+                        <i class="bi bi-journal-x mb-2" style="font-size: 2rem;"></i>
+                        <p>No subjects found in the registry.</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model.Items)
+                {
+                    <tr id="row-@item.Id">
+                        <td class="text-muted font-monospace small">#@item.Id.ToString("D4")</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary-subtle text-primary rounded-circle p-2 me-3">
+                                    <i class="bi bi-book-half"></i>
+                                </div>
+                                <span class="fw-bold text-dark">@item.SubjectName</span>
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light border px-2">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger px-2"
+                                    onclick="openDeleteModal(@item.Id, '@item.SubjectName')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @await Html.PartialAsync("_Pagination", Model, new ViewDataDictionary(ViewData) { { "RefreshFunction", "refreshSubjectTable" } })
+</div>

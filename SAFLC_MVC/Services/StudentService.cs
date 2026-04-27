@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SAFLC_MVC.Application.Model;
 using SAFLC_MVC.Applications.DTO.StudentDTO;
 using SAFLC_MVC.Applications.Helpers;
+using SAFLC_MVC.Applications.Model;
 using SAFLC_MVC.Data;
 using SAFLC_MVC.Interfaces;
 
@@ -13,7 +14,7 @@ namespace SAFLC_MVC.Services
         private readonly SaflcDbContext _context;
         public StudentService(IBaseRepository<Student> repository,
             IMapper mapper,
-            SaflcDbContext context) : base(repository, mapper)
+            SaflcDbContext context) : base(context, repository, mapper)
         {
             _context = context;
         }
@@ -38,6 +39,25 @@ namespace SAFLC_MVC.Services
                 await transaction.RollbackAsync();
                 return ResponseHelper.BuildFailure<GetStudentDTO>($"Failed: {ex.Message}");
             }
+        }
+
+        public async Task<PaginatedList<GetStudentDTO>> GetFilteredStudents(string searchString, int pageSize, int pageNumber = 1)
+        {
+            var result = await GetAll();
+            var query = result.Item ?? new List<GetStudentDTO>();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.Trim();
+                query = query.Where(s =>
+                    s.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    s.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            var count = query.Count();
+            var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginatedList<GetStudentDTO>(items, count, pageNumber, pageSize);
         }
 
         public async Task<ResultResponse<GetStudentDTO>> UpdateStudent(UpdateStudentDTO dto)

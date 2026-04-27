@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SAFLC_MVC.Application.Model;
+using SAFLC_MVC.Applications.Model;
 
 namespace SAFLC_MVC.Data
 {
@@ -28,6 +29,36 @@ namespace SAFLC_MVC.Data
         public DbSet<Student> tbl_Students { get; set; }
 
         public DbSet<Subject> tbl_Subjects { get; set; }
-         public DbSet<User> tbl_Users { get; set; }
+        public DbSet<User> tbl_Users { get; set; }
+    
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            // Get the current user name (You'll need to inject IHttpContextAccessor)
+            //var currentUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";
+            var currentUser = "System  sample";
+
+            foreach (var entityEntry in entries)
+            {
+                var entity = (BaseEntity)entityEntry.Entity;
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    entity.CreatedAt = DateTime.Now;
+                    entity.CreatedBy = currentUser;
+                    // RowVersion is usually handled by the DB or set here
+                    entity.RowVersion = Guid.NewGuid().ToByteArray();
+                }
+
+                entity.LastModifiedAt = DateTime.Now;
+                entity.LastModifiedBy = currentUser;
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
     }
+
 }

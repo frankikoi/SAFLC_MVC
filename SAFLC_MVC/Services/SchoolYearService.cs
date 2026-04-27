@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using SAFLC_MVC.Application.Model;
+using SAFLC_MVC.Applications.DTO.ActivityDTO;
 using SAFLC_MVC.Applications.DTO.SchoolYearDTO;
 using SAFLC_MVC.Applications.DTO.StudentDTO;
 using SAFLC_MVC.Applications.Helpers;
+using SAFLC_MVC.Applications.Model;
 using SAFLC_MVC.Data;
 using SAFLC_MVC.Interfaces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SAFLC_MVC.Services
 {
@@ -14,7 +17,7 @@ namespace SAFLC_MVC.Services
 
         public SchoolYearService(IBaseRepository<SchoolYear> repository,
             IMapper mapper,
-            SaflcDbContext context): base(repository, mapper)
+            SaflcDbContext context): base(context,repository, mapper)
         {
             _context = context;
         }
@@ -40,19 +43,24 @@ namespace SAFLC_MVC.Services
             }
         }
 
-        public async Task<List<GetSchoolYearDTO>> GetFilteredSchoolYears(string searchString)
+        public async Task<PaginatedList<GetSchoolYearDTO>> GetFilteredSchoolYears(string searchString, int pageSize = 10, int pageNumber = 1)
         {
             var result = await GetAll();
-            var schoolYears = result.Item ?? new List<GetSchoolYearDTO>();
+            var query = result.Item ?? new List<GetSchoolYearDTO>();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.Trim();
-                schoolYears = schoolYears.Where(sy =>
+                query = query.Where(sy =>
                     sy.Year?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false)
                     .ToList();
             }
-            return schoolYears;
+            var count = query.Count();
+            var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+
+            return new PaginatedList<GetSchoolYearDTO>(items, count, pageNumber, pageSize);
+
         }
 
         public async Task<ResultResponse<GetSchoolYearDTO>> UpdateSchoolYear(UpdateSchoolYearDTO dto)

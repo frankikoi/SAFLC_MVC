@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SAFLC_MVC.Applications.DTO.StudentDTO
 {
-    public class CreateStudentDTO : BaseEntity
+    public class CreateStudentDTO
     {
         [Required(ErrorMessage = "First name is required")]
         public string? FirstName { get; set; }
@@ -38,6 +38,8 @@ namespace SAFLC_MVC.Applications.DTO.StudentDTO
         public string? Address { get; set; }
 
         public bool Status { get; set; }
+
+        public string? CreatedBy { get; set; }
 
     }
 }

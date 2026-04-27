@@ -1,6 +1,8 @@
-﻿namespace SAFLC_MVC.Application.Model
+﻿using SAFLC_MVC.Applications.Model;
+
+namespace SAFLC_MVC.Application.Model
 {
-    public class Subject
+    public class Subject : BaseEntity
     {
         public int Id { get; set; }
 

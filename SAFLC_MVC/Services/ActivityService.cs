@@ -2,7 +2,9 @@
 using SAFLC_MVC.Application.Model;
 using SAFLC_MVC.Applications.DTO.ActivityDTO;
 using SAFLC_MVC.Applications.DTO.ClassesDTO;
+using SAFLC_MVC.Applications.DTO.StudentDTO;
 using SAFLC_MVC.Applications.Helpers;
+using SAFLC_MVC.Applications.Model;
 using SAFLC_MVC.Data;
 using SAFLC_MVC.Interfaces;
 using System.Diagnostics;
@@ -35,20 +37,24 @@ namespace SAFLC_MVC.Services
             }
         }
 
-        public async Task<List<GetActivityDTO>> GetFilteredActivity(string searchString)
+        public async Task<PaginatedList<GetActivityDTO>> GetFilteredActivity(string searchString, int pageNumber = 1)
         {
+            int pageSize = 5; // Set how many rows you want per page
             var result = await GetAll();
-            var activities = result.Item ?? new List<GetActivityDTO>();
+            var query = result.Item ?? new List<GetActivityDTO>();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.Trim();
-                activities = activities.Where(c => c.Title?
+                query = query.Where(c => c.Title?
                     .Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false)
                     .ToList();
             }
+            var count = query.Count();
+            var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            return activities;
+            return new PaginatedList<GetActivityDTO>(items, count, pageNumber, pageSize);
+
         }
 
         public async Task<ResultResponse<GetActivityDTO>> UpdateActivity(UpdateActivityDTO updateDto)
